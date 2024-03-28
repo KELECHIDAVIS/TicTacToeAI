@@ -4,7 +4,7 @@ using namespace std;
 struct Board{
     const int rows =3, cols = 3; 
     char** grid ; // 3x3 tictactoe grid 
-
+    char winner; // will indicate if player won or comp won 
     Board(){
         grid = new char*[rows]; 
         for(int i = 0; i< rows ; i++)
@@ -30,6 +30,63 @@ struct Board{
         }
         return temp; 
     }
+    bool moveAvail(){
+        for(int i =0 ; i< rows ; i++)
+        {
+            for(int j = 0 ; j<cols; j++ )
+            {
+               if(grid[i][j] == '-')
+                return true; 
+            }
+        }
+        return false; 
+    }
+    // this function check the status of the game;  returns false if the game is still going and true if its finished 
+    bool gameOver()
+    {
+        if(grid[0][0] == grid[0][1] && grid[0][1]== grid[0][2] && grid[0][0] != '-') { // first row 
+            winner =grid[0][0] ; 
+           return true; 
+        }
+        if(grid[1][0] == grid[1][1] && grid[1][1]== grid[1][2] && grid[1][0] != '-') { // second row 
+            winner = grid[1][0]; 
+           return true; 
+        }
+        if(grid[2][0] == grid[2][1] && grid[2][1]== grid[2][2] && grid[2][0] != '-') { // third row 
+            winner = grid[2][0]; 
+           return true; 
+        }
+
+        if(grid[0][0] == grid[1][0] && grid[1][0]== grid[2][0] && grid[0][0] != '-') { // first col 
+            winner = grid[0][0]; 
+           return true; 
+        }
+        if(grid[0][1] == grid[1][1] && grid[1][1]== grid[2][1] && grid[0][1] != '-') { // second col 
+            winner = grid[0][1]; 
+           return true; 
+        }
+        if(grid[0][2] == grid[1][2] && grid[1][2]== grid[2][2] && grid[0][2] != '-') { // third col 
+            winner = grid[0][2]; 
+           return true; 
+        }
+        
+        if(grid[0][0] == grid[1][1] && grid[1][1]== grid[2][2] && grid[0][0] != '-') { // first diag 
+            winner = grid[0][0]; 
+           return true; 
+        }
+        if(grid[2][0] == grid[1][1] && grid[1][1]== grid[0][2] && grid[2][0] != '-') { // second diag 
+            winner = grid[2][0]; 
+           return true; 
+        }
+
+        // if all that still is false then check if there any moves still available
+        // if so return false cus game is not over
+        if(moveAvail()) return false; 
+
+        // else it has ended in a draw 
+        return true; 
+    }
+   
     // takes in whether its the computer's turn or the players turn 
     void makeMove(bool max , int row , int col ) 
     {
@@ -48,5 +105,24 @@ struct Board{
 }; 
 
 int main(){
+    Board* board = new Board(); 
+    board->printBoard();
+    board->makeMove(true, 0,0);  
+    board->printBoard(); 
+    cout<<"Is The Game Over?: "<< board->gameOver()<<endl;  
+    board->makeMove(false, 1,0);  
+    board->printBoard(); 
+    cout<<"Is The Game Over?: "<< board->gameOver()<<endl;
+    board->makeMove(true, 0,1);  
+    board->printBoard(); 
+    cout<<"Is The Game Over?: "<< board->gameOver()<<endl;
+    board->makeMove(false, 1,1);  
+    board->printBoard(); 
+    cout<<"Is The Game Over?: "<< board->gameOver()<<endl;
+    board->makeMove(true, 0,2);  
+    board->printBoard(); 
+    cout<<"Is The Game Over?: "<< board->gameOver()<<endl;
+    cout<<"Winner: "<< board->winner<<endl; 
+    
     return 0; 
 }
