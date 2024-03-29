@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 using namespace std; 
 
 struct Board{
@@ -106,23 +107,40 @@ struct Board{
 
 int main(){
     Board* board = new Board(); 
-    board->printBoard();
-    board->makeMove(true, 0,0);  
-    board->printBoard(); 
-    cout<<"Is The Game Over?: "<< board->gameOver()<<endl;  
-    board->makeMove(false, 1,0);  
-    board->printBoard(); 
-    cout<<"Is The Game Over?: "<< board->gameOver()<<endl;
-    board->makeMove(true, 0,1);  
-    board->printBoard(); 
-    cout<<"Is The Game Over?: "<< board->gameOver()<<endl;
-    board->makeMove(false, 1,1);  
-    board->printBoard(); 
-    cout<<"Is The Game Over?: "<< board->gameOver()<<endl;
-    board->makeMove(true, 0,2);  
-    board->printBoard(); 
-    cout<<"Is The Game Over?: "<< board->gameOver()<<endl;
-    cout<<"Winner: "<< board->winner<<endl; 
-    
+    bool max=true; // is it maximising players turn ? 
+    while(true){
+        while(!board->gameOver()){
+            system("CLS"); 
+            board->printBoard(); 
+            char character= max? 'X': 'O'; 
+            cout<<"Player "<< character << " input your move in the form:  row column"<<endl; 
+            int row, col; 
+            cin>>row >> col ; 
+            while(row>3||row<1||col>3||col<1){
+                cout<<"Invalid Input. Try again (has to be in form: row column)"<<endl; 
+                cin>>row>>col; 
+            }
+            row-=1; col-=1; 
+            board->makeMove(max, row, col ); 
+            max = !max; 
+        }   
+
+        system("CLS"); 
+        board->printBoard(); 
+        if(board->winner){
+            cout<<"The winner is player "<<board->winner<<"!"<<endl; 
+        }else{
+            cout<<"The game ended in a draw"<<endl; 
+        }
+        cout<<"Play again? (y/n)"<<endl; 
+        char response ; 
+        cin>> response; 
+        if(response != 'y') 
+            break; 
+
+        // reset game 
+        board = new Board(); 
+        max = true; 
+    }
     return 0; 
 }
